@@ -1,0 +1,9 @@
+torch>=2.0.0
+transformers>=4.30.0
+datasets
+gradio==3.50.0  # For UI
+ray[rllib]>=2.7.0  # For RL
+numpy 
+pandas 
+scikit-learn
+accelerate
