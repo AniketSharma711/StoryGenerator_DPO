@@ -3,7 +3,6 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import random
 import os
 
-# 1. SETUP: Load the model you just trained
 # We load from the local folder where story_generator.py saved it
 model_path = "./gpt2-story-finetuned" 
 
@@ -21,7 +20,6 @@ except Exception as e:
     print(f"Error loading model: {e}")
     exit()
 
-# 2. DEVICE: Move to RTX 4060 (GPU)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 print(f"Model loaded on: {device}")
@@ -29,14 +27,13 @@ print(f"Model loaded on: {device}")
 def generate_story_segment(prompt, max_new_tokens=100):
     """Generates a continuation of the story based on the prompt."""
     
-    # CRITICAL FIX: We use tokenizer() instead of tokenizer.encode()
     # This returns a dictionary containing both 'input_ids' and 'attention_mask'
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
     
     # Generate text
     outputs = model.generate(
         input_ids=inputs.input_ids,           # Pass the token IDs
-        attention_mask=inputs.attention_mask, # Pass the mask (Fixes the warning/error)
+        attention_mask=inputs.attention_mask, # Pass the mask 
         max_new_tokens=max_new_tokens, 
         num_return_sequences=1, 
         temperature=0.8,
@@ -59,7 +56,6 @@ def generate_choices():
     ]
     return options
 
-# --- MAIN EXECUTION ---
 if __name__ == "__main__":
     initial_prompt = "Once upon a time, in a kingdom made of glass,"
     
@@ -67,7 +63,6 @@ if __name__ == "__main__":
     print("INPUT PROMPT:", initial_prompt)
     print("="*40)
     
-    # Generate the story
     story_output = generate_story_segment(initial_prompt)
     
     print("\nAI STORY OUTPUT:")

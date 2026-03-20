@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# --- CONFIGURATION ---
+# CONFIGURATION
 SFT_MODEL_PATH = "./gpt2-story-finetuned"   # The old model
 DPO_MODEL_PATH = "./dpo_results"            # The new aligned model
 PROMPTS = [
@@ -27,22 +27,22 @@ def generate_story(model, tokenizer, prompt):
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"⚙️  Running on {device}...")
+    print(f"Running on {device}...")
 
     # 1. Load Tokenizer (Same for both)
-    print("⏳ Loading Tokenizer...")
+    print("Loading Tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
 
     # 2. Load OLD Model (SFT)
-    print("⏳ Loading SFT Model (Old)...")
+    print("Loading SFT Model (Old)...")
     model_sft = AutoModelForCausalLM.from_pretrained(SFT_MODEL_PATH).to(device)
 
     # 3. Load NEW Model (DPO)
-    print("⏳ Loading DPO Model (New)...")
+    print("Loading DPO Model (New)...")
     model_dpo = AutoModelForCausalLM.from_pretrained(DPO_MODEL_PATH).to(device)
 
     print("\n" + "="*60)
-    print("⚔️  MODEL BATTLE: SFT vs. DPO  ⚔️")
+    print("MODEL BATTLE: SFT vs. DPO  - Generating Stories")
     print("="*60 + "\n")
 
     for prompt in PROMPTS:
@@ -53,11 +53,11 @@ def main():
         torch.manual_seed(42) # Reset seed for fair comparison
         story_dpo = generate_story(model_dpo, tokenizer, prompt)
 
-        print(f"📝 PROMPT: {prompt}")
+        print(f"PROMPT: {prompt}")
         print("-" * 20)
-        print(f"🔴 SFT (Old): {story_sft}")
+        print(f"SFT (Old): {story_sft}")
         print("-" * 20)
-        print(f"🟢 DPO (New): {story_dpo}")
+        print(f"DPO (New): {story_dpo}")
         print("\n" + "="*60 + "\n")
 
 if __name__ == "__main__":
